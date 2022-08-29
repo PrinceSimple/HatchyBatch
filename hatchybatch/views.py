@@ -159,7 +159,7 @@ class XDoGSliders(tk.Frame):
             from_=0.01,
             to=10.0,
             length=200,
-            label=u"\u03c3" + " - Sigma high",
+            label=u"\u03c3" + u"\u2081" + " - Sigma high",
             width=10,
             resolution=0.1,
             orient=tk.HORIZONTAL,
@@ -170,7 +170,7 @@ class XDoGSliders(tk.Frame):
             to=10.0,
             resolution=0.1,
             length=200,
-            label=u"\u03c3" + " - Sigma low",
+            label=u"\u03c3" + u"\u2082" + " - Sigma low",
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.xdog_sigma_low).pack()
@@ -281,13 +281,13 @@ class FlowFieldSliders(tk.Frame):
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.flowfield_rho).pack()
-        self.rho = tk.Scale(
+        self.hatch_sigma = tk.Scale(
             self,
             from_=0.1,
             to=10.0,
             resolution=0.1,
             length=200,
-            label=u"Hatchfield smoothing \u03c1",
+            label=u"Hatchfield smoothing \u03c3",
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.flowfield_hatch_sigma).pack()
@@ -309,7 +309,7 @@ class TresholdSliders(tk.Frame):
             to=1.0,
             resolution=0.01,
             length=200,
-            label="low min max",
+            label="dark tone min/max",
             width=5,
             orient=tk.HORIZONTAL,
             variable=controller.thresh_low_min).pack()
@@ -329,7 +329,7 @@ class TresholdSliders(tk.Frame):
             to=1.0,
             resolution=0.01,
             length=200,
-            label="middle low min max",
+            label="dark mids min/max",
             width=5,
             orient=tk.HORIZONTAL,
             variable=controller.thresh_midlow_min).pack()
@@ -349,7 +349,7 @@ class TresholdSliders(tk.Frame):
             to=1.0,
             resolution=0.01,
             length=200,
-            label="middle high min max",
+            label="light mids min/max",
             width=5,
             orient=tk.HORIZONTAL,
             variable=controller.thresh_midhigh_min).pack()
@@ -369,7 +369,7 @@ class TresholdSliders(tk.Frame):
             to=1.0,
             resolution=0.01,
             length=200,
-            label="high min max",
+            label="highlights min/max",
             width=5,
             orient=tk.HORIZONTAL,
             variable=controller.thresh_high_min).pack()
@@ -414,7 +414,7 @@ class ControlFigure(tk.Frame):
         self.xdog.set_title('XDoG')
         # self.xdog.axis('off')
         self.flow_field = self.fig.add_subplot(2, 2, 3, frame_on=False)
-        self.flow_field.set_title('Flow Field')
+        self.flow_field.set_title('Flowfield')
         # self.flow_field.axis('off')
         self.edgemap = self.fig.add_subplot(2, 2, 4, frame_on=False)
         self.edgemap.set_title('Edge Map')
@@ -554,7 +554,7 @@ class Mainview(tk.Frame):
         self.xdog_threshold_frame = XDoGThresholdFigure(self)
         self.plot_tabs.add(self.control_frame, text="Control Images")
         self.plot_tabs.add(self.xdog_threshold_frame,
-                           text="Xdog Masks")
+                           text="XDoG Masks")
         self.plot_tabs.add(self.threshold_frame, text="Threshold Masks")
 
         self.plot_tabs.grid(row=0, column=0, rowspan=2, sticky=tk.N)

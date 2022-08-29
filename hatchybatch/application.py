@@ -237,8 +237,9 @@ class Controller():
         self.status_text.set(f'{len(self.tracer._paths)} paths in output')
 
     def show_output(self):
-        self.trace_image()
-        self.tracer.show_preview()
+        # self.trace_image()
+        if self.tracer:
+            self.tracer.show_preview()
 
     def disable_buttons(self):
         for button in self.main_view.buttons.winfo_children():
@@ -263,6 +264,7 @@ class Controller():
         self.check_thread(thread)
 
     def trace_threaded(self):
+        self.disable_buttons()
         if self.tracer:
             thread = Thread(target=self.trace_image)
             thread.start()
