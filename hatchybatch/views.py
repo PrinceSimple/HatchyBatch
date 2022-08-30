@@ -76,8 +76,6 @@ class PathlengthSliders(tk.Frame):
             variable=controller.high_length).pack()
         ttk.Separator(self, orient='horizontal').pack(fill='x')
         self.output_options = OutputOptions(self, controller).pack(padx=20)
-        tk.Button(self, text="Preview in Browser", command=controller.show_output,
-                  padx=5, pady=5).pack()
 
 
 class PathdistanceSliders(tk.Frame):
@@ -142,11 +140,6 @@ class PathdistanceSliders(tk.Frame):
         ).pack()
         ttk.Separator(self, orient='horizontal').pack(fill='x')
         self.output_options = OutputOptions(self, controller).pack()
-        tk.Button(self,
-                  text="Preview in Browser",
-                  command=controller.show_output,
-                  padx=5, pady=5
-                  ).pack(padx=5, pady=5)
 
 
 class XDoGSliders(tk.Frame):
@@ -494,15 +487,17 @@ class Buttons(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.recalculate_btn = tk.Button(
-            self, text="Trace Image", command=controller.trace_threaded).grid(row=0, column=1, padx=5, pady=5, ipadx=37, ipady=5)
+            self, text="Trace Image", command=lambda: controller.run_threaded(controller.trace_image)).grid(row=0, column=1, padx=5, pady=5, ipadx=37, ipady=5)
         self.recalculate_btn = tk.Button(
-            self, text="Recalculate Everything", command=controller.calc_threaded).grid(row=1, column=1, padx=5, pady=10, ipadx=10, ipady=5)
+            self, text="Recalculate Everything", command=lambda: controller.run_threaded(controller.calc_threaded)).grid(row=1, column=1, padx=5, pady=5, ipadx=10, ipady=5)
+        self.preview_btn = tk.Button(
+            self, text="Preview in Browser", command=controller.show_output).grid(row=2, column=1, padx=5, pady=10, ipadx=20, ipady=5)
         self.open_file_btn = tk.Button(
-            self, text="Open File...", command=controller.open_file).grid(row=2, column=0, padx=5, pady=5)
+            self, text="Open File...", command=controller.open_file).grid(row=3, column=0, padx=5, pady=5)
         self.save_output_btn = tk.Button(
-            self, text="Save Output...", command=controller.save_output).grid(row=2, column=2, padx=5, pady=5)
+            self, text="Save Output...", command=controller.save_output).grid(row=3, column=2, padx=5, pady=5)
         self.save_config_btn = tk.Button(
-            self, text="Save config...", command=controller.save_config).grid(row=2, column=1, padx=5, pady=5)
+            self, text="Save config...", command=controller.save_config).grid(row=3, column=1, padx=5, pady=5)
 
 
 class StatusBar(tk.Frame):
@@ -537,16 +532,16 @@ class MenuFrame(tk.Frame):
                              text="Path Distance / Crosshatch")
 
         self.output_tabs.pack(side=tk.RIGHT, anchor=tk.NE,
-                              ipadx=15, padx=5, pady=2)
+                              ipady=22, ipadx=15, padx=5, pady=2)
         self.conf_tabs.pack(side=tk.RIGHT, anchor=tk.NE,
-                            ipadx=20, padx=5, pady=2)
+                            ipadx=15, padx=5, pady=2)
 
 
 class Mainview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.menuFrame = MenuFrame(self, controller)
+        self.menu_frame = MenuFrame(self, controller)
         self.buttons = Buttons(self, controller)
         self.plot_tabs = ttk.Notebook(self)
         self.control_frame = ControlFigure(self)
@@ -558,5 +553,5 @@ class Mainview(tk.Frame):
         self.plot_tabs.add(self.threshold_frame, text="Threshold Masks")
 
         self.plot_tabs.grid(row=0, column=0, rowspan=2, sticky=tk.N)
-        self.menuFrame.grid(row=0, column=1, rowspan=1, sticky=tk.N)
+        self.menu_frame.grid(row=0, column=1, rowspan=1, sticky=tk.N)
         self.buttons.grid(row=1, column=1, rowspan=1, sticky=tk.N)

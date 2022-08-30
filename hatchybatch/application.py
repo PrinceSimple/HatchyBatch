@@ -124,7 +124,7 @@ class Controller():
             filetypes=[('Supported Images', '.png .jpg .jpeg .tif .bmp')])
         if f:
             self.model.load_image(f)
-            self.calc_threaded()
+            self.run_threaded(self.calculate_all_and_show)
 
     def save_output(self):
         f = filedialog.asksaveasfilename(
@@ -212,7 +212,7 @@ class Controller():
         # self.show_DoG()
         self.show_edgemap()
         self.show_flowfield()
-        self.trace_image()
+        # self.trace_image()
 
     def trace_image(self):
         self.tracer = Tracer(
@@ -238,7 +238,7 @@ class Controller():
 
     def show_output(self):
         # self.trace_image()
-        if self.tracer:
+        if hasattr(self, 'tracer'):
             self.tracer.show_preview()
 
     def disable_buttons(self):
@@ -257,28 +257,26 @@ class Controller():
             except Exception as e:
                 print(e)
 
-    def calc_threaded(self):
+    def run_threaded(self, target):
         self.disable_buttons()
-        thread = Thread(target=self.calculate_all_and_show)
+        thread = Thread(target=target)
         thread.start()
         self.check_thread(thread)
-
-    def trace_threaded(self):
-        self.disable_buttons()
-        if self.tracer:
-            thread = Thread(target=self.trace_image)
-            thread.start()
-            self.check_thread(thread)
 
     def check_thread(self, thread):
         if thread.is_alive():
             self.status_text.set('Calculating...Please be patient')
             self.root.after(200, self.check_thread, thread)
         else:
-            self.enable_buttons()
-            self.status_text.set(
-                f'Done. - {len(self.tracer._paths)} paths in output')
+            if hasattr(self, 'tracer'):
+                self.enable_buttons()
+                self.status_text.set(
+                    f'Done. - {len(self.tracer._paths)} paths in output')
+            else:
+                self.enable_buttons()
+                self.status_text.set('You have to trace the image first...')
 
     def save_config(self):
-        for config in enumerate(self.__dict__):
-            print(config.get())
+        pass
+        # for config in enumerate(self.__dict__):
+        #   print(config.get())
