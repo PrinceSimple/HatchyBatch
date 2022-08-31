@@ -489,7 +489,7 @@ class Buttons(tk.Frame):
         self.recalculate_btn = tk.Button(
             self, text="Trace Image", command=lambda: controller.run_threaded(controller.trace_image)).grid(row=0, column=1, padx=5, pady=5, ipadx=37, ipady=5)
         self.recalculate_btn = tk.Button(
-            self, text="Recalculate Everything", command=lambda: controller.run_threaded(controller.calc_threaded)).grid(row=1, column=1, padx=5, pady=5, ipadx=10, ipady=5)
+            self, text="Recalculate Everything", command=lambda: controller.run_threaded(controller.calculate_all)).grid(row=1, column=1, padx=5, pady=5, ipadx=10, ipady=5)
         self.preview_btn = tk.Button(
             self, text="Preview in Browser", command=controller.show_output).grid(row=2, column=1, padx=5, pady=10, ipadx=20, ipady=5)
         self.open_file_btn = tk.Button(

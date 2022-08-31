@@ -106,10 +106,6 @@ class Controller():
         self.edges_output.set(True)
         self.hatch_output.set(True)
         self.status_text.set("Ready")
-        ######## Initial Image Loading ########
-       # self.model.load_image('./hatchybatch/img/lenna_512.png')
-       # self.calculate_all_and_show()
-       # self.trace_image()
 
         self.run()
 
@@ -124,7 +120,7 @@ class Controller():
             filetypes=[('Supported Images', '.png .jpg .jpeg .tif .bmp')])
         if f:
             self.model.load_image(f)
-            self.run_threaded(self.calculate_all_and_show)
+            self.run_threaded(self.calculate_all)
 
     def save_output(self):
         f = filedialog.asksaveasfilename(
@@ -206,13 +202,17 @@ class Controller():
             self.model.xdog_thresholds[3], 'gray')
         self.main_view.xdog_threshold_frame.canvas.draw()
 
-    def calculate_all_and_show(self):
-        self.show_image()
-        self.show_XDoG()
-        # self.show_DoG()
-        self.show_edgemap()
-        self.show_flowfield()
-        # self.trace_image()
+    def calculate_all(self):
+        try:
+            self.show_image()
+            self.show_XDoG()
+            # self.show_DoG()
+            self.show_edgemap()
+            self.show_flowfield()
+            # self.trace_image()
+        except Exception as e:
+            print(e)
+            self.status_text.set("You have to open a bitmap image first...")
 
     def trace_image(self):
         self.tracer = Tracer(
@@ -237,7 +237,6 @@ class Controller():
         self.status_text.set(f'{len(self.tracer._paths)} paths in output')
 
     def show_output(self):
-        # self.trace_image()
         if hasattr(self, 'tracer'):
             self.tracer.show_preview()
 
@@ -258,10 +257,13 @@ class Controller():
                 print(e)
 
     def run_threaded(self, target):
-        self.disable_buttons()
-        thread = Thread(target=target)
-        thread.start()
-        self.check_thread(thread)
+        try:
+            self.disable_buttons()
+            thread = Thread(target=target)
+            thread.start()
+            self.check_thread(thread)
+        except Exception as e:
+            print(e)
 
     def check_thread(self, thread):
         if thread.is_alive():
