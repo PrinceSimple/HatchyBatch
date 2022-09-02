@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import filedialog
 from hatchybatch.views import Mainview, StatusBar
 from hatchybatch.models import ImageData, Tracer
 from threading import Thread
