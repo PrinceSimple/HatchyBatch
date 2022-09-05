@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from hatchybatch.views import Mainview, StatusBar
-from hatchybatch.models import ImageData, Tracer
+from hatchybatch.models import ImageData, Tracer, ConfigData
 from threading import Thread
 
 
@@ -117,7 +117,7 @@ class Controller():
 
     def open_file(self):
         f = filedialog.askopenfilename(
-            filetypes=[('Supported Images', '.png .jpg .jpeg .tif .bmp')])
+            filetypes=[('Supported Images', '.png .jpg .jpeg .tif .tiff .bmp')])
         if f:
             self.model.load_image(f)
             self.run_threaded(self.calculate_all)
@@ -127,6 +127,30 @@ class Controller():
             filetypes=[('HatchyBatch Output', '.svg')], defaultextension=".svg")
         if f:
             self.tracer.save_output(f)
+
+    def save_config(self):
+        config = {}
+        for name, obj in vars(self).items():
+            if isinstance(obj, (tk.DoubleVar, tk.IntVar, tk.BooleanVar)):
+                config[name] = obj.get()
+
+        f = filedialog.asksaveasfilename(
+            filetypes=[('HatchyBatch configuration file', '.json')], defaultextension=".json")
+        if f:
+            ConfigData().save_config(f, config)
+
+    def load_config(self):
+        f = filedialog.askopenfilename(
+            filetypes=[('HatchyBatch configuration file', '.json')])
+        if f:
+            try:
+                config = ConfigData().load_config(f)
+                for name, obj in vars(self).items():
+                    if isinstance(obj, (tk.DoubleVar, tk.IntVar, tk.BooleanVar)):
+                        obj.set(config[name])
+            except:
+                self.status_text.set(
+                    f"There was a problem parsing the config file")
 
     def show_image(self):
         self.main_view.control_frame.original.imshow(
@@ -268,7 +292,7 @@ class Controller():
     def check_thread(self, thread):
         if thread.is_alive():
             self.status_text.set('Calculating...Please be patient')
-            self.root.after(200, self.check_thread, thread)
+            self.root.after(300, self.check_thread, thread)
         else:
             if hasattr(self, 'tracer'):
                 self.enable_buttons()
@@ -276,9 +300,5 @@ class Controller():
                     f'Done. - {len(self.tracer._paths)} paths in output')
             else:
                 self.enable_buttons()
-                self.status_text.set('You have to trace the image first...')
-
-    def save_config(self):
-        pass
-        # for config in enumerate(self.__dict__):
-        #   print(config.get())
+                self.status_text.set(
+                    'You have to load and trace an image first...')

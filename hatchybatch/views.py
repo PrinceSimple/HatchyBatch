@@ -1,7 +1,6 @@
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
-from PIL import ImageTk, Image
 import tkinter as tk
 from tkinter import ttk
 import matplotlib
@@ -217,7 +216,7 @@ class EdgeMapSliders(tk.Frame):
             to=10.0,
             resolution=0.1,
             length=200,
-            label=u"\u03c3" + " - Sigma",
+            label=u"\u03c3" + u"\u2085" + " - Sigma",
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.edgemap_sigma).pack()
@@ -260,7 +259,7 @@ class FlowFieldSliders(tk.Frame):
             to=10.0,
             resolution=0.1,
             length=200,
-            label=u"\u03c3" + " - Sigma",
+            label=u"\u03c3" + u"\u2083" + " - Sigma",
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.flowfield_sigma).pack()
@@ -280,7 +279,7 @@ class FlowFieldSliders(tk.Frame):
             to=10.0,
             resolution=0.1,
             length=200,
-            label=u"Hatchfield smoothing \u03c3",
+            label=u"Hatchfield smoothing \u03c3" + u"\u2084",
             width=10,
             orient=tk.HORIZONTAL,
             variable=controller.flowfield_hatch_sigma).pack()
@@ -405,13 +404,10 @@ class ControlFigure(tk.Frame):
         self.original.tick_params(axis='both', labelsize=8)
         self.xdog = self.fig.add_subplot(2, 2, 2, frame_on=False)
         self.xdog.set_title('XDoG')
-        # self.xdog.axis('off')
         self.flow_field = self.fig.add_subplot(2, 2, 3, frame_on=False)
         self.flow_field.set_title('Flowfield')
-        # self.flow_field.axis('off')
         self.edgemap = self.fig.add_subplot(2, 2, 4, frame_on=False)
         self.edgemap.set_title('Edge Map')
-        # self.edgemap.axis('off')
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.get_tk_widget().pack(side=tk.TOP, padx=10, pady=10)
         self.toolbar = NavigationToolbar2Tk(
@@ -429,13 +425,10 @@ class ThresholdFigure(tk.Frame):
         self.thresh_low.tick_params(axis='both', labelsize=8)
         self.thresh_midlow = self.fig.add_subplot(2, 2, 2, frame_on=False)
         self.thresh_midlow.set_title('dark mids')
-        # self.thresh_midlow.axis('off')
         self.thresh_midhigh = self.fig.add_subplot(2, 2, 3, frame_on=False)
         self.thresh_midhigh.set_title('light mids')
-        # self.thresh_midhigh.axis('off')
         self.thresh_high = self.fig.add_subplot(2, 2, 4, frame_on=False)
         self.thresh_high.set_title('highlights')
-        # self.thresh_high.axis('off')
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.get_tk_widget().pack(side=tk.TOP, padx=10, pady=10)
         self.toolbar = NavigationToolbar2Tk(
@@ -494,10 +487,12 @@ class Buttons(tk.Frame):
             self, text="Preview in Browser", command=controller.show_output).grid(row=2, column=1, padx=5, pady=10, ipadx=20, ipady=5)
         self.open_file_btn = tk.Button(
             self, text="Open File...", command=controller.open_file).grid(row=3, column=0, padx=5, pady=5)
-        self.save_output_btn = tk.Button(
-            self, text="Save Output...", command=controller.save_output).grid(row=3, column=2, padx=5, pady=5)
         self.save_config_btn = tk.Button(
             self, text="Save config...", command=controller.save_config).grid(row=3, column=1, padx=5, pady=5)
+        self.load_config_btn = tk.Button(
+            self, text="Load config...", command=controller.load_config).grid(row=4, column=1, padx=5, pady=5)
+        self.save_output_btn = tk.Button(
+            self, text="Save Output...", command=controller.save_output).grid(row=3, column=2, padx=5, pady=5)
 
 
 class StatusBar(tk.Frame):

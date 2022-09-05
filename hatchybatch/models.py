@@ -1,6 +1,7 @@
 import numpy as np
 import lic
 import random
+import json
 from svgpathtools import Path, Line, parse_path, disvg, wsvg
 from structure_tensor import eig_special_2d, structure_tensor_2d
 from skimage.filters import gaussian
@@ -47,14 +48,14 @@ class ImageData():
         self.dog = self.binarize(np.subtract(relative_diff, threshold))
 
     def generate_XDoG(self, sigma_high, sigma_low, p, phi, epsilon):
-        ''' XDoG - implementation of Winnemöller et al. eXtended Difference of Gaussians'''
+        ''' XDoG - implementation of Winnemoeller et al. eXtended Difference of Gaussians'''
         outer = gaussian(self.source, sigma=sigma_high)
         inner = gaussian(self.source, sigma=sigma_low)
-        # Equation 2.7.4 in thesis
+        # Equation 3.7.4 in thesis
         scaled_dog = np.subtract(np.multiply(
             p + 1, inner), np.multiply(p, outer))
         unsharp_mask = np.multiply(np.multiply(outer, scaled_dog), 255)
-        # Equation 2.7.2 in thesis
+        # Equation 3.7.2 in thesis
         ramp_tresh = np.add(1, self.ramp_threshold(
             img=unsharp_mask, phi=phi, epsilon=epsilon))
         result = np.multiply(ramp_tresh, 255)
@@ -64,7 +65,6 @@ class ImageData():
     def generate_edge_map(self, sigma, thresh_high, thresh_low):
         ''' simple canny edge detection with the GUI supplied parameters'''
         self.edgemap = canny(self.source, sigma, thresh_high, thresh_low)
-        #self.edge_idx = np.transpose(np.nonzero(self.edgemap))
 
     def generate_flow_field(self, sigma, rho, hatchsigma):
         '''edge tangent flow field derived by the eigenvectors of the structure tensor'''
@@ -166,7 +166,6 @@ class Tracer():
                     if crosshatch[idx]:
                         self._paths.append(
                             path.rotated(random.randint(70, 110), path.point(random.choice([0.3, 0.4, 0.5, 0.6, 0.7]))))
-        # disvg(self._paths)
 
     def generate_contours(self, path_length, probability):
         ''' the algorithm for the edge paths generation'''
@@ -178,12 +177,10 @@ class Tracer():
                     f'M {pt_x-random.randint(1,path_length)} {pt_y} L {pt_x+random.randint(1,path_length)} {pt_y}')
                 path = path.rotated(self.degrees[pt_y][pt_x])
                 self._paths.append(path)
-        # disvg(self._paths)
 
     def show_preview(self):
         ''' display the generated SVG in the browser'''
-        #self.svg_str = disvg(self._paths, paths2Drawing=True).tostring()
-        disvg(self._paths)  # stroke_widths=[1 for paths in self._paths])
+        disvg(self._paths)
 
     def save_output(self, filename):
         wsvg(self._paths, filename=filename, mindim=1024)
@@ -203,5 +200,10 @@ class Pentip():
 
 
 class ConfigData():
-    def __init__(self):
-        pass
+    def save_config(self, filename, config):
+        with open(filename, 'w') as f:
+            json.dump(config, f)
+
+    def load_config(self, filename):
+        with open(filename, 'r') as f:
+            return json.load(f)
